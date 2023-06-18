@@ -19,11 +19,11 @@ public partial class Calificacion
 
     public int Unidad { get; set; }
 
-    public virtual Alumno IdAlumnoNavigation { get; set; } = null!;
+    public virtual Alumno? IdAlumnoNavigation { get; set; } = null!;
 
-    public virtual Asignatura IdAsignaturaNavigation { get; set; } = null!;
+    public virtual Asignatura? IdAsignaturaNavigation { get; set; } = null!;
 
-    public virtual Docente IdDocenteNavigation { get; set; } = null!;
+    public virtual Docente? IdDocenteNavigation { get; set; } = null!;
 
-    public virtual Periodo IdPeriodoNavigation { get; set; } = null!;
+    public virtual Periodo? IdPeriodoNavigation { get; set; } = null!;
 }

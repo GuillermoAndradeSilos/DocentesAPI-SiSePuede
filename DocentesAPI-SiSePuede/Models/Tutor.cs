@@ -23,5 +23,5 @@ public partial class Tutor
 
     public virtual ICollection<AlumnoTutor> AlumnoTutor { get; set; } = new List<AlumnoTutor>();
 
-    public virtual Usuario IdusuarioNavigation { get; set; } = null!;
+    public virtual Usuario? IdusuarioNavigation { get; set; }
 }

@@ -27,13 +27,13 @@ public partial class Alumno
 
     public int IdGrupo { get; set; }
 
-    public virtual ICollection<AlumnoTutor> AlumnoTutor { get; set; } = new List<AlumnoTutor>();
+    public virtual ICollection<AlumnoTutor>? AlumnoTutor { get; set; } = new List<AlumnoTutor>();
 
-    public virtual ICollection<Calificacion> Calificacion { get; set; } = new List<Calificacion>();
+    public virtual ICollection<Calificacion>? Calificacion { get; set; } = new List<Calificacion>();
 
-    public virtual ICollection<DocenteAlumno> DocenteAlumno { get; set; } = new List<DocenteAlumno>();
+    public virtual ICollection<DocenteAlumno>? DocenteAlumno { get; set; } = new List<DocenteAlumno>();
 
-    public virtual Grupo IdGrupoNavigation { get; set; } = null!;
+    public virtual Grupo? IdGrupoNavigation { get; set; }
 
-    public virtual ICollection<Notasdirector> Notasdirector { get; set; } = new List<Notasdirector>();
+    public virtual ICollection<Notasdirector>? Notasdirector { get; set; } = new List<Notasdirector>();
 }
