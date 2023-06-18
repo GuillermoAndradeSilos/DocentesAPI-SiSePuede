@@ -1,4 +1,5 @@
 ﻿using DocentesAPI_SiSePuede.Models;
+using DocentesAPI_SiSePuede.Models.DTOs;
 using DocentesAPI_SiSePuede.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -26,54 +27,54 @@ namespace DocentesAPI_SiSePuede.Controllers
             grupodocenterepo = new Repository<DocenteGrupo>(cx);
         }
         #region CRUD-ALUMNO
-        [HttpGet("AlumnoGrupo/{id}")]
-        public IActionResult AlumnoGrupo(int id)
+        [HttpGet("/AlumnoGrupo")]
+        public IActionResult AlumnoGrupo(AlumnoDTO alumno)
         {
-            var alumnos = alumnorepo.GetAll().Where(x => x.IdGrupo == id);
+            var alumnos = alumnorepo.GetAll().Where(x => x.IdGrupo == alumno.Alumno.Id);
             return Ok(alumnos);
         }
 
-        [HttpPost("AgregarAlumno")]
-        public IActionResult AgregarAlumno(Alumno alumno)
+        [HttpPost("/AgregarAlumno")]
+        public IActionResult AgregarAlumno(AlumnoDTO alumno)
         {
             if (alumno == null)
                 return BadRequest();
-            alumnorepo.Insert(alumno);
+            alumnorepo.Insert(alumno.Alumno);
             return Ok();
         }
 
-        [HttpPut("EditarAlumno")]
-        public IActionResult EditarAlumno(Alumno alumno)
+        [HttpPut("/EditarAlumno")]
+        public IActionResult EditarAlumno(AlumnoDTO alumno)
         {
             if (alumno == null)
                 return BadRequest();
-            var a = alumnorepo.GetById(alumno.Id);
-            if (a == null)
+            var alumnoeditar = alumnorepo.GetById(alumno.Alumno.Id);
+            if (alumnoeditar == null)
                 return NotFound();
             else
             {
-                a.Matricula = alumno.Matricula;
-                a.Nombre = alumno.Nombre;
-                a.Direccion = alumno.Direccion;
-                a.Curp = alumno.Curp;
-                a.IdGrupo = alumno.IdGrupo;
-                a.Alergico = alumno.Alergico;
-                a.Peso = alumno.Peso;
-                a.Estatura = alumno.Estatura;
-                a.FechaNacimiento = alumno.FechaNacimiento;
-                a.Edad = alumno.Edad;
+                alumnoeditar.Matricula = alumno.Alumno.Matricula;
+                alumnoeditar.Nombre = alumno.Alumno.Nombre;
+                alumnoeditar.Direccion = alumno.Alumno.Direccion;
+                alumnoeditar.Curp = alumno.Alumno.Curp;
+                alumnoeditar.IdGrupo = alumno.Alumno.IdGrupo;
+                alumnoeditar.Alergico = alumno.Alumno.Alergico;
+                alumnoeditar.Peso = alumno.Alumno.Peso;
+                alumnoeditar.Estatura = alumno.Alumno.Estatura;
+                alumnoeditar.FechaNacimiento = alumno.Alumno.FechaNacimiento;
+                alumnoeditar.Edad = alumno.Alumno.Edad;
             }
-            alumnorepo.Update(a);
+            alumnorepo.Update(alumnoeditar);
             return Ok();
         }
 
-        [HttpPost("EliminarAlumno")]
-        public IActionResult EliminarAlumno(Alumno a)
+        [HttpPost("/EliminarAlumno")]
+        public IActionResult EliminarAlumno(AlumnoDTO alumno)
         {
-            var alumno = alumnorepo.GetAll().Where(x=>x.Id==a.Id).FirstOrDefault();
-            if (alumno == null)
+            var alumnoeliminar = alumnorepo.GetAll().Where(x => x.Id == alumno.Alumno.Id).FirstOrDefault();
+            if (alumnoeliminar == null)
                 return NotFound();
-            alumnorepo.Delete(alumno);
+            alumnorepo.Delete(alumnoeliminar);
             return Ok();
         }
         #endregion

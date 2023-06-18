@@ -1,4 +1,5 @@
 ﻿using DocentesAPI_SiSePuede.Models;
+using DocentesAPI_SiSePuede.Models.DTOs;
 using DocentesAPI_SiSePuede.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,53 +25,53 @@ namespace DocentesAPI_SiSePuede.Controllers
             alumnoturorepos = new Repository<AlumnoTutor>(this.cx);
         }
         [HttpGet("/GetPadre")]
-        public IActionResult GetPadre(int idAlumno)
+        public IActionResult GetPadre(TutorDTO tutor)
         {
-            var idtutores = alumnoturorepos.GetAll().Where(x => x.IdAlumno == idAlumno).Select(x => x.IdTutor);
+            var idtutores = alumnoturorepos.GetAll().Where(x => x.IdAlumno == tutor.Alumno).Select(x => x.IdTutor);
             var tutores = padrerepos.GetAll().Where(x => idtutores.Contains(x.Id));
             return Ok(tutores);
         }
 
         [HttpPost("/AgregarPadre")]
-        public IActionResult AgregarPadre(Tutor tutor)
+        public IActionResult AgregarPadre(TutorDTO tutor)
         {
             if (tutor == null)
                 return BadRequest();
-            padrerepos.Insert(tutor);
+            padrerepos.Insert(tutor.Tutor);
             return Ok();
         }
 
         [HttpPut("/EditarPadre")]
-        public IActionResult EditarPadre(Tutor tutor)
+        public IActionResult EditarPadre(TutorDTO tutor)
         {
             if (tutor == null)
                 return BadRequest();
-            var a = padrerepos.GetById(tutor.Id);
+            var a = padrerepos.GetById(tutor.Tutor.Id);
             if (a == null)
                 return NotFound();
             else
             {
-                a.Nombre = tutor.Nombre;
-                a.Direccion = tutor.Direccion;
-                a.Telefono = tutor.Telefono;
-                a.Celular = tutor.Celular;
-                a.Email = tutor.Email;
-                a.Idusuario = tutor.Idusuario;
-                a.Ocupacion = tutor.Ocupacion;
+                a.Nombre = tutor.Tutor.Nombre;
+                a.Direccion = tutor.Tutor.Direccion;
+                a.Telefono = tutor.Tutor.Telefono;
+                a.Celular = tutor.Tutor.Celular;
+                a.Email = tutor.Tutor.Email;
+                a.Idusuario = tutor.Tutor.Idusuario;
+                a.Ocupacion = tutor.Tutor.Ocupacion;
             }
             padrerepos.Update(a);
             return Ok();
         }
 
         [HttpPost("/EliminarPadre")]
-        public IActionResult EliminarPadre(int id, int idAlumno)
+        public IActionResult EliminarPadre(TutorDTO tutor)
         {
-            if (id == 0)
+            if (tutor.Tutor != null && tutor.Alumno != 0)
                 return BadRequest();
-            var tutor = alumnoturorepos.GetAll().Where(x => x.IdTutor == id && x.IdAlumno == idAlumno).FirstOrDefault();
-            if (tutor == null)
+            var padre = alumnoturorepos.GetAll().Where(x => x.IdTutor == tutor.Tutor.Id && x.IdAlumno == tutor.Alumno).FirstOrDefault();
+            if (padre == null)
                 return NotFound();
-            alumnoturorepos.Delete(tutor);
+            alumnoturorepos.Delete(padre);
             return Ok();
         }
     }

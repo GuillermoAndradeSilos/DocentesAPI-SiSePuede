@@ -21,7 +21,7 @@ public partial class Sistem21PrimariaContext : DbContext
 
     public virtual DbSet<Asignatura> Asignatura { get; set; }
 
-    public virtual DbSet<Asistencia> Asistencias { get; set; }
+    public virtual DbSet<Asistencias> Asistencias { get; set; }
 
     public virtual DbSet<Calendario> Calendario { get; set; }
 
@@ -117,7 +117,7 @@ public partial class Sistem21PrimariaContext : DbContext
             entity.Property(e => e.TipoAsignatura).HasColumnType("int(11)");
         });
 
-        modelBuilder.Entity<Asistencia>(entity =>
+        modelBuilder.Entity<Asistencias>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
 

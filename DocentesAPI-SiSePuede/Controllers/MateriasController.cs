@@ -36,9 +36,9 @@ namespace DocentesAPI_SiSePuede.Controllers
         }
         //Lo demas de abajo es lo de las calificaciones (ya me dio pereza poner region, mejor bajenle la temperatura a la region de aqui, ayuda no tengo minisplit :c)
         [HttpGet("/ObtenerCalificaciones")]
-        public IActionResult ObtenerCalificaciones(int idAlumno, int idAsignatura)
+        public IActionResult ObtenerCalificaciones(CalificacionDTO calif)
         {
-            var calificaciones = reposCalificacion.GetAll().Where(x => x.IdAlumno == idAlumno && x.IdAsignatura == idAsignatura);
+            var calificaciones = reposCalificacion.GetAll().Where(x => x.IdAlumno == calif.Alumno && x.IdAsignatura == calif.Asignatura);
             return Ok(calificaciones);
         }
         //Este show sera para hacer el reporte, dios quiera que funcione
@@ -73,7 +73,7 @@ namespace DocentesAPI_SiSePuede.Controllers
             var aja = docenterepo.GetAll().Where(x => x.IdAlumno == calif.Calificacion.IdAlumno).FirstOrDefault();
             if (calif.Comentario != null && aja != null)
             {
-                aja.ComentarioDocente=calif.Comentario;
+                aja.ComentarioDocente = calif.Comentario;
                 docenterepo.Update(aja);
             }
             reposCalificacion.Insert(calif.Calificacion);
