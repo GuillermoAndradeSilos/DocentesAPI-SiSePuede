@@ -23,13 +23,13 @@ public partial class Docente
 
     public int IdUsuario { get; set; }
 
-    public virtual ICollection<Calificacion> Calificacion { get; set; } = new List<Calificacion>();
+    public virtual ICollection<Calificacion>? Calificacion { get; set; } 
 
-    public virtual ICollection<DocenteAlumno> DocenteAlumno { get; set; } = new List<DocenteAlumno>();
+    public virtual ICollection<DocenteAlumno>? DocenteAlumno { get; set; }
 
-    public virtual ICollection<DocenteAsignatura> DocenteAsignatura { get; set; } = new List<DocenteAsignatura>();
+    public virtual ICollection<DocenteAsignatura>? DocenteAsignatura { get; set; }
 
-    public virtual ICollection<DocenteGrupo> DocenteGrupo { get; set; } = new List<DocenteGrupo>();
+    public virtual ICollection<DocenteGrupo>? DocenteGrupo { get; set; }
 
-    public virtual Usuario IdUsuarioNavigation { get; set; } = null!;
+    public virtual Usuario? IdUsuarioNavigation { get; set; }
 }

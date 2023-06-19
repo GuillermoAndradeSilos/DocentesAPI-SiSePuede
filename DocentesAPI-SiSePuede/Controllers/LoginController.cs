@@ -39,6 +39,7 @@ namespace DocentesAPI_SiSePuede.Controllers
                     docente = docenterepos.GetAll().Where(x => x.IdUsuario == usuario.Id).FirstOrDefault();
                     if (docente != null)
                     {
+                        docente.IdUsuarioNavigation = null;
                         if (docente.TipoDocente == 1)
                             return Ok(docente);
                         else
@@ -49,7 +50,7 @@ namespace DocentesAPI_SiSePuede.Controllers
                 }
             }
             else
-                return BadRequest("");
+                return BadRequest("Nombre de usuario o contraseña incorrecto");
         }
     }
 }

@@ -27,7 +27,7 @@ namespace DocentesAPI_SiSePuede.Controllers
             grupodocenterepo = new Repository<DocenteGrupo>(cx);
         }
         #region CRUD-ALUMNO
-        [HttpGet("/AlumnoGrupo")]
+        [HttpPost("/AlumnoGrupo")]
         public IActionResult AlumnoGrupo(AlumnoDTO alumno)
         {
             var alumnos = alumnorepo.GetAll().Where(x => x.IdGrupo == alumno.Alumno.Id);
