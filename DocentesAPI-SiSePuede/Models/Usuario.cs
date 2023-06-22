@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace DocentesAPI_SiSePuede.Models;
 
 public partial class Usuario
-{   
+{
     public int Id { get; set; }
 
     public string Usuario1 { get; set; } = null!;
@@ -17,5 +17,5 @@ public partial class Usuario
 
     public virtual ICollection<Docente>? Docente { get; set; }
 
-    public virtual ICollection<Tutor>? Tutor { get; set; } 
+    public virtual ICollection<Tutor>? Tutor { get; set; }
 }

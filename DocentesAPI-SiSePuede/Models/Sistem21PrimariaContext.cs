@@ -123,6 +123,8 @@ public partial class Sistem21PrimariaContext : DbContext
 
             entity.ToTable("asistencias");
 
+            entity.HasIndex(e => e.IdAlumno, "fkAlumnoAsistencia_idx");
+
             entity.Property(e => e.Id)
                 .HasColumnType("int(11)")
                 .HasColumnName("id");
@@ -130,6 +132,11 @@ public partial class Sistem21PrimariaContext : DbContext
             entity.Property(e => e.IdAlumno)
                 .HasColumnType("int(11)")
                 .HasColumnName("idAlumno");
+
+            entity.HasOne(d => d.IdAlumnoNavigation).WithMany(p => p.Asistencias)
+                .HasForeignKey(d => d.IdAlumno)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("fkAlumnoAsistencia");
         });
 
         modelBuilder.Entity<Calendario>(entity =>

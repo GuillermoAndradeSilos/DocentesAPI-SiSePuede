@@ -34,25 +34,31 @@ namespace DocentesAPI_SiSePuede.Controllers
             var asignaturas = materiasrepo.GetAll().Where(x => x.TipoAsignatura == 1);
             return Ok(asignaturas);
         }
-        //Lo demas de abajo es lo de las calificaciones (ya me dio pereza poner region, mejor bajenle la temperatura a la region de aqui, ayuda no tengo minisplit :c)
-        [HttpGet("/ObtenerCalificaciones")]
+        [HttpGet("/ObtenerComentario/{id}")]
+        public IActionResult ObtenerComentario(int id)
+        {
+            var comentario = docenterepo.GetAll().Where(x => x.IdAlumno == id).Select(x => x.ComentarioDocente).FirstOrDefault();
+            return Ok(comentario);
+        }
+        //Lo demas de abajo es lo de las calificaciones (ya me dio pereza poner region, mejor bajenle la temperatura a la region, ayuda no tengo minisplit :c)
+        [HttpPost("/ObtenerCalificaciones")]
         public IActionResult ObtenerCalificaciones(CalificacionDTO calif)
         {
             var calificaciones = reposCalificacion.GetAll().Where(x => x.IdAlumno == calif.Alumno && x.IdAsignatura == calif.Asignatura);
             return Ok(calificaciones);
         }
         //Este show sera para hacer el reporte, dios quiera que funcione
-        [HttpGet("/GenerarReporte")]
-        //"ehh ehh pero no se esta generando el reporte aqui", SHHHHH SHHH, shh un sabio una vez dijo string.Isnullorempy
+        [HttpGet("/GenerarReporte/{idGrupo}/{idDocente}")]
+        //"ehh ehh pero no se esta generando el reporte aqui solo est...", SHHHHH SHHH, shh un sabio una vez dijo string.Isnullorempy
         public IActionResult GenerarReporte(int idGrupo, int idDocente)
         {
             List<ReporteDTO> alumnosreporbados = new();
             //a la linea de abajo no le muevan jala si esta lista, supongo que las calificaciones 
-            var calificaciones = reposCalificacion.GetAll().Where(x => x.IdAlumnoNavigation.IdGrupo == idGrupo && x.IdDocente == idDocente && x.Calificacion1 < 6).ToList();
-            var alumnos = reposCalificacion.GetAll().Where(x => x.IdAlumnoNavigation.IdGrupo == idGrupo && x.IdDocente == idDocente && x.Calificacion1 < 6)
-                .Select(x => x.IdAlumnoNavigation.Nombre);
-            var asignaturas = reposCalificacion.GetAll().Where(x => x.IdAlumnoNavigation.IdGrupo == idGrupo && x.IdDocente == idDocente && x.Calificacion1 < 6)
-                .Select(x => x.IdAsignaturaNavigation.Nombre);
+            var calificaciones = reposCalificacion.GetAll().Where(x => x.IdAlumnoNavigation.IdGrupo == idGrupo && (x.Calificacion1 < 6 || x.Calificacion1 < 60)).ToList();
+            var alumnos = reposCalificacion.GetAll().Where(x => x.IdAlumnoNavigation.IdGrupo == idGrupo && (x.Calificacion1 < 6 || x.Calificacion1 < 60))
+                .Select(x => x.IdAlumnoNavigation.Nombre).ToList();
+            var asignaturas = reposCalificacion.GetAll().Where(x => x.IdAlumnoNavigation.IdGrupo == idGrupo && (x.Calificacion1 < 6 || x.Calificacion1 < 60))
+                .Select(x => x.IdAsignaturaNavigation.Nombre).ToList();
             for (int i = 0; i < calificaciones.Count; i++)
             {
                 alumnosreporbados.Add(new ReporteDTO()
@@ -70,20 +76,29 @@ namespace DocentesAPI_SiSePuede.Controllers
         {
             if (calif == null)
                 return BadRequest("Esto no deberia salir de hecho, probablemente error de no se, envio desde la app, checar que el objeto enviado sea 'CalificacionDTO'");
+            calif.Calificacion.IdPeriodo = 2;
+            reposCalificacion.Insert(calif.Calificacion);
             var aja = docenterepo.GetAll().Where(x => x.IdAlumno == calif.Calificacion.IdAlumno).FirstOrDefault();
+            if (aja == null)
+                docenterepo.Insert(new DocenteAlumno()
+                {
+                    IdDocente = calif.Calificacion.IdDocente,
+                    IdAlumno = calif.Calificacion.IdAlumno,
+                    IdPeriodo = calif.Calificacion.IdPeriodo,
+                    ComentarioDocente = calif.Comentario
+                });
             if (calif.Comentario != null && aja != null)
             {
                 aja.ComentarioDocente = calif.Comentario;
                 docenterepo.Update(aja);
             }
-            reposCalificacion.Insert(calif.Calificacion);
             return Ok();
         }
         //Asi sin autorizacion pal alumno que se meta de jaker se ponga 10
         [HttpPut("/EditarCalificacion")]
         public IActionResult EditarCalificacion(CalificacionDTO calif)
         {
-            //Tenemos de 2 hacemos las validaciones aqui o en la app, lo mejor seria en las 2 pero bueno, la avaricia es un pecado
+            //Tenemos de 2 hacemos las validaciones aqui o en la app, lo mejor seria en las 2 pero bueno eso seria avaricia y eso es un pecado
             if (calif == null)
                 return BadRequest();
             var a = reposCalificacion.GetById(calif.Calificacion.Id);
@@ -98,6 +113,12 @@ namespace DocentesAPI_SiSePuede.Controllers
                 a.IdAlumno = calif.Calificacion.IdAlumno;
             }
             reposCalificacion.Update(a);
+            var aja = docenterepo.GetAll().Where(x => x.IdAlumno == calif.Calificacion.IdAlumno).FirstOrDefault();
+            if (calif.Comentario != null && aja != null)
+            {
+                aja.ComentarioDocente = calif.Comentario;
+                docenterepo.Update(aja);
+            }
             return Ok();
         }
     }

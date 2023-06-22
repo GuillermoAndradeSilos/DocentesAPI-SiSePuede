@@ -29,7 +29,7 @@ public partial class Docente
 
     public virtual ICollection<DocenteAsignatura>? DocenteAsignatura { get; set; }
 
-    public virtual ICollection<DocenteGrupo>? DocenteGrupo { get; set; }
+    public virtual ICollection<DocenteGrupo>? DocenteGrupo { get; set; } 
 
     public virtual Usuario? IdUsuarioNavigation { get; set; }
 }

@@ -10,11 +10,11 @@ namespace DocentesAPI_SiSePuede.Controllers
     public class AsistenciaController : ControllerBase
     {
         private Sistem21PrimariaContext context;
-        Repository<Asistencia> Repositorio;
+        Repository<Asistencias> Repositorio;
         public AsistenciaController(Sistem21PrimariaContext context)
         {
             this.context = context;
-            Repositorio = new Repository<Asistencia>(context);
+            Repositorio = new Repository<Asistencias>(context);
         }
 
         [HttpGet("/ObtenerAsistencias")]
@@ -24,18 +24,16 @@ namespace DocentesAPI_SiSePuede.Controllers
             return Ok(asistencias);
         }
 
-        [HttpGet("/ObtenerAsistencias/{id:int}")]
+        [HttpGet("/ObtenerAsistencias/{id}")]
         public IActionResult GetbyID(int id)
         {
-            var asistencias = Repositorio.GetById(id);
-            if(asistencias == null)
-            {
+            var asistencias = Repositorio.GetAll().Where(x => x.IdAlumno == id);
+            if (asistencias == null)
                 return Conflict("No existe el alumno");
-            }
-            return Ok();
+            return Ok(asistencias);
         }
         [HttpPost("/AgregarAsistencia")]
-        public IActionResult Post(Asistencia a)
+        public IActionResult Post(Asistencias a)
         {
             var anterior = Repositorio.GetById(a.Id);
             if (anterior != null)
@@ -44,11 +42,11 @@ namespace DocentesAPI_SiSePuede.Controllers
             }
             else
             {
-                if (a.Fecha<DateOnly.FromDateTime(DateTime.Now))
+                if (a.Fecha < DateOnly.FromDateTime(DateTime.Now))
                 {
                     return Conflict("No puedes registrar asistencias de dias anteriores al de hoy");
                 }
-                if (a.IdAlumno==0)
+                if (a.IdAlumno == 0)
                 {
                     return Conflict("No puedes registrar asistencias a un alumno que no existe");
                 }
@@ -59,43 +57,23 @@ namespace DocentesAPI_SiSePuede.Controllers
                 }
             }
         }
-        [HttpDelete("/EliminarAsistencia")]
-        public IActionResult Delete(Asistencia a)
+        [HttpPut("/EditarAsistencia")]
+        public IActionResult Put(Asistencias a)
         {
             var anterior = Repositorio.GetById(a.Id);
             if (anterior == null)
             {
-                return BadRequest("La eliminacion de la asistencia fracaso");
-            }
-            else
-            {
-                if (a.IdAlumno==0)
-                {
-                    return Conflict("No puedes eliminar asistencias a un alumno que no existe");
-                }
-                else
-                {
-                    Repositorio.Delete(a);
-                    return Ok("Se ah eliminado correctamente la asistencia");
-                }
-            }
-        }
-        [HttpPut("/EditarAsistencia")]
-        public IActionResult Put(Asistencia a)
-        {
-            var anterior = Repositorio.GetById(a.Id);
-            if (anterior!=null)
-            {
                 return NotFound("No existe la asistencia que desea editar");
             }
-            if (a.Fecha<DateOnly.FromDateTime(DateTime.Now))
+            if (a.Fecha < DateOnly.FromDateTime(DateTime.Now))
             {
                 return BadRequest("No puedes colocar una fecha anterior a la fecha actual");
             }
-            if (a.IdAlumno==0)
+            if (a.IdAlumno == 0)
             {
                 return Conflict("No puedes editar la asistencia de un alumno que no existe");
             }
+            Repositorio.Update(a);
             return Ok();
         }
 

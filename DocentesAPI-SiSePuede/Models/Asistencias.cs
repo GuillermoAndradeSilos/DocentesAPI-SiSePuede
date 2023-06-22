@@ -12,4 +12,6 @@ public partial class Asistencias
     public DateOnly Fecha { get; set; }
 
     public sbyte? Asistio { get; set; }
+
+    public virtual Alumno? IdAlumnoNavigation { get; set; }
 }

@@ -27,10 +27,10 @@ namespace DocentesAPI_SiSePuede.Controllers
             grupodocenterepo = new Repository<DocenteGrupo>(cx);
         }
         #region CRUD-ALUMNO
-        [HttpPost("/AlumnoGrupo")]
-        public IActionResult AlumnoGrupo(AlumnoDTO alumno)
+        [HttpGet("/AlumnoGrupo/{id}")]
+        public IActionResult AlumnoGrupo(int id)
         {
-            var alumnos = alumnorepo.GetAll().Where(x => x.IdGrupo == alumno.Alumno.Id);
+            var alumnos = alumnorepo.GetAll().Where(x => x.IdGrupo == id).ToList();
             return Ok(alumnos);
         }
 
@@ -43,7 +43,7 @@ namespace DocentesAPI_SiSePuede.Controllers
             return Ok();
         }
 
-        [HttpPut("/EditarAlumno")]
+        [HttpPost("/EditarAlumno")]
         public IActionResult EditarAlumno(AlumnoDTO alumno)
         {
             if (alumno == null)
@@ -80,13 +80,14 @@ namespace DocentesAPI_SiSePuede.Controllers
         #endregion
 
         #region ShowDeLosGrupos
-        [HttpGet("Docente/{id}")]
-        public IActionResult GetDocente(int id)
+        [HttpGet("/GrupoDocente/{id}")]
+        public IActionResult GetGrupoDocente(int id)
         {
             Grupo grupos = new();
             var docenteGrupos = grupodocenterepo.GetAll().Where(x => x.IdDocente == id).FirstOrDefault();
             if (docenteGrupos != null)
                 grupos = gruporepo.GetById(docenteGrupos.IdGrupo);
+            grupos.DocenteGrupo = null;
             return Ok(grupos);
         }
         #endregion
